@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 const houseSchema = new mongoose.Schema({
+    id:String,
     title: String,
     category:String,
     location: String,

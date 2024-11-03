@@ -3,8 +3,8 @@ import House from "../models/houseSchema.js"
 
 // Controller functions
 export const createHouse = (req, res) => {
-    const { title, category, location, price, image, description } = req.body;
-    const newHouse = new House({ title, category, location, price, image, description });
+    const {id, title, category, location, price, image, description } = req.body;
+    const newHouse = new House({id, title, category, location, price, image, description });
     newHouse.save()
         .then((data) => res.json(data))
         .catch((error) => res.json({ message: error }));
