@@ -5,6 +5,7 @@ import morgan from "morgan"
 import bodyParser from "body-parser"
 import connectDB from "./utils/dbConnection.js"
 import HouseRouter from "./mvc/routes/houseRouter.js"
+import cookieParser from "cookie-parser"
 dotenv.config();
 const app = express()
 const port = 3000
@@ -22,6 +23,7 @@ connectDB();
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
 app.use(morgan('dev'));
 app.use('/house', HouseRouter);
 
