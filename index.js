@@ -6,6 +6,7 @@ import bodyParser from "body-parser"
 import connectDB from "./utils/dbConnection.js"
 import HouseRouter from "./mvc/routes/houseRouter.js"
 import cookieParser from "cookie-parser"
+import userRouter from "./mvc/routes/userRouter.js"
 dotenv.config();
 const app = express()
 const port = 3000
@@ -26,6 +27,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(morgan('dev'));
 app.use('/house', HouseRouter);
+app.use('/auth', userRouter);
 
 app.get('/', (req, res) => {
     res.send('Hello World!')
