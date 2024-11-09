@@ -9,10 +9,11 @@ import cookieParser from "cookie-parser"
 import userRouter from "./mvc/routes/userRouter.js"
 dotenv.config();
 const app = express()
-const port = 3000
+const port = 5000
 
 const corsOptions = {
-    origin: "*",
+    origin: ['http://localhost:3000'],
+
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     preflightContinue: false,
     optionsSuccessStatus: 204,
