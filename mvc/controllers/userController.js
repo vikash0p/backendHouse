@@ -25,33 +25,33 @@ export const RegisterUser = async (req, res) => {
 }
 
 export const LoginUser = async (req, res) => {
-    const{email, password}=req.body;
+    const { email, password } = req.body;
 
     const user = await User.findOne({ email });
-    if(!user) return res.status(404).json({ message: "User not found" });
+    if (!user) return res.status(404).json({ message: "User not found" });
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
-    if(!isPasswordCorrect) return res.status(400).json({ message: "Invalid credentials" });
+    if (!isPasswordCorrect) return res.status(400).json({ message: "Invalid credentials" });
 
     if (user && isPasswordCorrect) {
 
-        const token = jwt.sign({ email: user.email, id: user._id }, process.env.JWT_TOKEN, { expiresIn: 30 });
+        const token = jwt.sign({ email: user.email, id: user._id }, process.env.JWT_TOKEN, { expiresIn: "1h" });
 
         res.cookie("token", token, {
-            path:'/',
-            expires: new Date(Date.now() + 60 * 1000),
+            path: '/',
+            expires: new Date(Date.now() + 60 * 60 * 1000),
             httpOnly: true,
             sameSite: "lax",
         });
 
-        res.status(200).json({message: "Login successful", result: user, token,success: true });
+        res.status(200).json({ message: "Login successful", result: user, token, success: true });
     } else {
-        res.status(401).json({ message: "Invalid credentials",success: false });
+        res.status(401).json({ message: "Invalid credentials", success: false });
     }
 }
 export const LogoutUser = (req, res) => {
     res.clearCookie("token", {
         httpOnly: true,
-        sameSite: "Strict",
+        sameSite: "lax",
         secure: process.env.NODE_ENV === "production"
     });
     res.status(200).json({ message: "Logout successful", success: true });

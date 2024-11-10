@@ -9,13 +9,13 @@ import cookieParser from "cookie-parser"
 import userRouter from "./mvc/routes/userRouter.js"
 dotenv.config();
 const app = express()
-const port = 5000
+const port = process.env.PORT || 5000
 
 const corsOptions = {
     origin: 'http://localhost:3000',
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    methods: ["GET,HEAD,PUT,PATCH,POST,DELETE"],
     credentials: true,
-  };
+};
 
 connectDB();
 app.use(cors(corsOptions));
