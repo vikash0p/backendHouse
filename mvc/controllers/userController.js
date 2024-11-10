@@ -40,7 +40,7 @@ export const LoginUser = async (req, res) => {
             path: '/',
             expires: new Date(Date.now() + 60 * 60 * 1000),
             httpOnly: true,
-            sameSite: "lax",
+            sameSite: 'none',
         });
 
         res.status(200).json({ message: "Login successful", result: user, token, success: true });
