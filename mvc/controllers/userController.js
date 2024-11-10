@@ -41,6 +41,8 @@ export const LoginUser = async (req, res) => {
             expires: new Date(Date.now() + 60 * 60 * 1000),
             httpOnly: true,
             sameSite: 'none',
+            secure: process.env.NODE_ENV === 'production', // Only secure in production
+
         });
 
         res.status(200).json({ message: "Login successful", result: user, token, success: true });
