@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <script src="https://cdn.tailwindcss.com"></script>
+      <title>Home Backend API</title>
+      <link rel="stylesheet" href="css/style.css">
+   </head>
+   <body class="text-white bg-black container m-auto">
+      <h1 class="text-5xl uppercase py-5 text-center">Welcome to Home Backend API</h1>
+      <!-- using the technologies in this project -->
+       <section class="py-10 mb-10">
+        <h2 class="text-3xl font-bold">Using the technologies in this project</h2>
+        <div class="pb-10">
+            <ul class="mt-3 flex flex-wrap gap-10 justify-between item-center">
+               <li class="px-5 py-2 bg-white text-black">Node.js </li>
+               <li class="px-5 py-2 bg-white text-black">mongoose </li>
+               <li class="px-5 py-2 bg-white text-black">ejs</li>
+               <li class="px-5 py-2 bg-white text-black">bcryptjs</li>
+               <li class="px-5 py-2 bg-white text-black">body-parser</li>
+               <li class="px-5 py-2 bg-white text-black">cookie-parser</li>
+               <li class="px-5 py-2 bg-white text-black">cors</li>
+               <li class="px-5 py-2 bg-white text-black">dotenv</li>
+               <li class="px-5 py-2 bg-white text-black">express</li>
+               <li class="px-5 py-2 bg-white text-black">jsonwebtoken</li>
+               <li class="px-5 py-2 bg-white text-black">morgan</li>
+               <li class="px-5 py-2 bg-white text-black">nodemon</li>
+            </ul>
+        </div>
+       </div>
+      <!-- Users API Section -->
+      <section class="flex flex-col gap-4 px-5">
+         <h4 class="text-3xl font-bold">Users API</h4>
+
+         <!-- POST API Routes -->
+         <div class="max-w-2xl">
+            <h4 class="text-2xl font-bold">POST</h4>
+            <ul class="mt-3 space-y-2">
+               <li class="flex flex-row gap-10 justify-between">
+                  <span>Register User</span>
+                  <a class="text-blue-400 hover:underline" href="https://backendhouse-2702.onrender.com/auth/register">https://backendhouse-2702.onrender.com/auth/register</a>
+               </li>
+               <li class="flex flex-row gap-10 justify-between">
+                  <span>Login User</span>
+                  <a class="text-blue-400 hover:underline" href="https://backendhouse-2702.onrender.com/auth/login">https://backendhouse-2702.onrender.com/auth/login</a>
+               </li>
+            </ul>
+         </div>
+
+         <!-- GET API Routes -->
+         <div class="max-w-2xl">
+            <h4 class="text-2xl font-bold">GET</h4>
+            <ul class="mt-3 space-y-2">
+               <li class="flex flex-row gap-10 justify-between">
+                  <span>Get User</span>
+                  <a class="text-blue-400 hover:underline" href="https://backendhouse-2702.onrender.com/auth/getUserDetails">https://backendhouse-2702.onrender.com/auth/getUserDetails</a>
+               </li>
+            </ul>
+         </div>
+
+         <!-- DELETE API Routes -->
+         <div class="max-w-2xl">
+            <h4 class="text-2xl font-bold">DELETE</h4>
+            <ul class="mt-3 space-y-2">
+               <li class="flex flex-row gap-10 justify-between">
+                  <span>Delete Users</span>
+                  <a class="text-blue-400 hover:underline" href="https://backendhouse-2702.onrender.com/auth/logout">https://backendhouse-2702.onrender.com/auth/logout</a>
+               </li>
+            </ul>
+         </div>
+      </section>
+
+
+       <!-- Users Home Section -->
+      <section class="flex flex-col gap-4 px-5 my-20">
+         <h4 class="text-3xl font-bold">Home Decor API</h4>
+
+         <!-- POST API Routes -->
+         <div class="max-w-2xl">
+            <h4 class="text-2xl font-bold">POST</h4>
+            <ul class="mt-3 space-y-2">
+               <li class="flex flex-row gap-10 justify-between">
+                  <span>Create Home api</span>
+                  <a class="text-blue-400 hover:underline" href="https://backendhouse-2702.onrender.com/house/create">https://backendhouse-2702.onrender.com/house/create</a>
+               </li>
+
+            </ul>
+         </div>
+
+         <!-- GET API Routes -->
+         <div class="max-w-2xl">
+            <h4 class="text-2xl font-bold">GET</h4>
+            <ul class="mt-3 space-y-2">
+               <li class="flex flex-row gap-10 justify-between">
+                  <span>Get All Home Api</span>
+                  <a class="text-blue-400 hover:underline" href="https://backendhouse-2702.onrender.com/house/getAllHouse">https://backendhouse-2702.onrender.com/house/getAllHouse</a>
+               </li>
+               <li class="flex flex-row gap-10 justify-between">
+                  <span>Get All Home Api by Id</span>
+                  <a class="text-blue-400 hover:underline" href="https://backendhouse-2702.onrender.com/house/getHouseById/67264818f1680ad046d39d25">https://backendhouse-2702.onrender.com/house/getHouseById/67264818f1680ad046d39d25</a>
+               </li>
+            </ul>
+         </div>
+
+
+      </section>
+   </body>
+</html>

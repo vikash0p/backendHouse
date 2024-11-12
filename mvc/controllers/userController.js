@@ -34,34 +34,71 @@ export const LoginUser = async (req, res) => {
 
     if (user && isPasswordCorrect) {
 
-        const token = jwt.sign({ email: user.email, id: user._id }, process.env.JWT_TOKEN, { expiresIn: "1h" });
+        const token = jwt.sign({ id: user._id }, process.env.JWT_TOKEN, { expiresIn: "1h" });
 
         res.cookie("token", token, {
             path: '/',
             expires: new Date(Date.now() + 60 * 60 * 1000),
             httpOnly: true,
-            sameSite: 'none',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
             secure: process.env.NODE_ENV === 'production', // Only secure in production
 
         });
 
-        res.status(200).json({ message: "Login successful", result: user, token, success: true });
+        res.status(200).json({ message: "Login successful", token, success: true });
     } else {
         res.status(401).json({ message: "Invalid credentials", success: false });
     }
 }
 export const LogoutUser = (req, res) => {
-    res.clearCookie("token", {
-        httpOnly: true,
-        sameSite: "lax",
-        secure: process.env.NODE_ENV === "production"
-    });
-    res.status(200).json({ message: "Logout successful", success: true });
+    try {
+        res.clearCookie("token", {
+            httpOnly: true,
+            sameSite: "none",
+            secure: process.env.NODE_ENV === "production",
+            path: "/", // Ensure it clears across all paths
+            domain: process.env.COOKIE_DOMAIN || undefined, // Set this if using a specific domain
+        });
+
+        res.status(200).json({ message: "Logout successful", success: true });
+    } catch (error) {
+        console.error("Error during logout:", error);
+        res.status(500).json({ message: "Logout failed", success: false });
+    }
 };
 
-export const getUserDetails = (req, res) => {
-    const { email } = req.user;
-    User.findOne({ email })
-        .then((data) => res.json({ message: "User details fetched successfully", result: data, success: true }))
-        .catch((error) => res.json({ message: error, success: false }));
+
+
+export const getUserDetails = async (req, res) => {
+    try {
+        const { id } = req.user;
+
+        if (!id) {
+            return res.status(400).json({
+                message: "User ID is missing in request",
+                success: false,
+            });
+        }
+
+        const user = await User.findOne({ _id: id }).select('-password'); // Exclude the password field
+
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found",
+                success: false,
+            });
+        }
+
+        res.status(200).json({
+            message: "User details fetched successfully",
+            result: user,
+            success: true,
+        });
+    } catch (error) {
+        console.error("Error fetching user details:", error);
+        res.status(500).json({
+            message: "An error occurred while fetching user details",
+            success: false,
+        });
+    }
 };

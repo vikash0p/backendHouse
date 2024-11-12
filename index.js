@@ -18,7 +18,10 @@ const corsOptions = {
     allowedHeaders: ["Content-Type", "Authorization"],
 };
 
+app.use(express.static('public'));
+
 connectDB();
+app.set('view engine', 'ejs');
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -28,7 +31,7 @@ app.use('/house', HouseRouter);
 app.use('/auth', userRouter);
 
 app.get('/', (req, res) => {
-    res.send('Hello World!')
+    res.render('index');
 })
 /*   */
 
