@@ -1,40 +1,65 @@
-import express from 'express'
-import cors from 'cors'
-import dotenv from 'dotenv'
-import morgan from "morgan"
-import bodyParser from "body-parser"
-import connectDB from "./utils/dbConnection.js"
-import HouseRouter from "./mvc/routes/houseRouter.js"
-import cookieParser from "cookie-parser"
-import userRouter from "./mvc/routes/userRouter.js"
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import morgan from 'morgan';
+import cookieParser from 'cookie-parser';
+
+import connectDB from './utils/dbConnection.js';
+import HouseRouter from './mvc/routes/houseRouter.js';
+import userRouter from './mvc/routes/userRouter.js';
+import productRouter from "./mvc/routes/productRouter.js";
+import reviewRouter from "./mvc/routes/reviewRouter.js";
+
+productRouter
+// Load environment variables
 dotenv.config();
-const app = express()
-const port = process.env.PORT || 5000
 
-const corsOptions = {
-    origin: 'http://localhost:3000',
-    methods: ["GET,HEAD,PUT,PATCH,POST,DELETE"],
-    credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization"],
-};
+const app = express();
+const port = process.env.PORT || 5000;
 
-app.use(express.static('public'));
-
+// Database connection
 connectDB();
-app.set('view engine', 'ejs');
-app.use(cors(corsOptions));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+
+// Middleware
+app.use(express.static('public'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(morgan('dev'));
+
+// CORS configuration
+const corsOptions = {
+    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+    credentials: true,
+};
+app.use(cors(corsOptions));
+
+// Set view engine
+app.set('view engine', 'ejs');
+
+// Routes
 app.use('/house', HouseRouter);
 app.use('/auth', userRouter);
+app.use('/furniture', productRouter)
+app.use('/reviews', reviewRouter)
 
 app.get('/', (req, res) => {
     res.render('index');
-})
-/*   */
+});
 
+
+// Error handling for unhandled routes
+app.use((req, res, next) => {
+    res.status(404).json({ message: 'Route not found' });
+});
+
+// Global error handler
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ message: 'Internal server error' });
+});
+
+// Start server
 app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
-})
+    console.log(`Server running at http://localhost:${port}`);
+});

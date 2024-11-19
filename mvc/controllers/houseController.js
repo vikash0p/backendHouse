@@ -20,5 +20,5 @@ export const getHouseById = (req, res) => {
     const { id } = req.params;
     House.findById(id)
         .then((data) => res.json(data))
-        .catch((error) => res.json({ message: error }));
+        .catch((error) => res.json({ message: error }));3
 };
