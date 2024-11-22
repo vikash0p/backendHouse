@@ -18,7 +18,7 @@ export const createProduct = async (req, res) => {
 export const getAllProducts = async (req, res) => {
     try {
         // Get query parameters
-        const { page = 1, limit = 12, sortBy = 'price', order = 'asc', ...filters } = req.query;
+        const { page = 1, limit = 12, sortBy = 'price', order = 'asc', search = '', ...filters } = req.query;
 
         // Set pagination options
         const skip = (page - 1) * limit;
@@ -28,16 +28,34 @@ export const getAllProducts = async (req, res) => {
         // Build the filter object dynamically
         const filter = {};
 
-        if (filters.category) filter.category = filters.category;
-        if (filters.brand) filter.brand = filters.brand;
-        if (filters.rating) filter.rating = { $gte: parseFloat(filters.rating) };
-        if (filters.material) filter.material = filters.material;
+        // Search functionality: Match keyword in name or description
+        if (search) {
+            filter.$or = [
+                { name: { $regex: search, $options: 'i' } }, // Case-insensitive search in name
+                { description: { $regex: search, $options: 'i' } }, // Case-insensitive search in description
+            ];
+        }
+
+        // Handle multiple values for category, brand, material, rating, and colors
+        if (filters.category) {
+            filter.category = { $in: Array.isArray(filters.category) ? filters.category : filters.category.split(',') };
+        }
+        if (filters.brand) {
+            filter.brand = { $in: Array.isArray(filters.brand) ? filters.brand : filters.brand.split(',') };
+        }
+        if (filters.material) {
+            filter.material = { $in: Array.isArray(filters.material) ? filters.material : filters.material.split(',') };
+        }
+        if (filters.rating) {
+            const ratings = Array.isArray(filters.rating) ? filters.rating : filters.rating.split(',');
+            filter.rating = { $gte: Math.min(...ratings.map(parseFloat)) };
+        }
+        if (filters.colors) {
+            filter.colors = { $in: Array.isArray(filters.colors) ? filters.colors : filters.colors.split(',') };
+        }
 
         // Fetch the products with filtering, sorting, and pagination
-        const products = await Product.find(filter)
-            .skip(skip)
-            .limit(limitValue)
-            .sort({ [sortBy]: sortOrder });
+        const products = await Product.find(filter).skip(skip).limit(limitValue).sort({ [sortBy]: sortOrder });
 
         // Count the total number of products for pagination
         const totalProducts = await Product.countDocuments(filter);
@@ -58,6 +76,7 @@ export const getAllProducts = async (req, res) => {
         res.status(500).json({ success: false, message: "Failed to fetch products", error: error.message });
     }
 };
+
 
 
 // Get a single product by ID
