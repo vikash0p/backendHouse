@@ -7,10 +7,24 @@
     "dev": "nodemon index.js",
     "start": "node index.js"
   },
-  "keywords": [],
+  "engines": {
+    "node": "20.11.0"
+  },
+  "keywords": [
+    "Modern Furniture",
+    "Affordable Furniture",
+    "Luxury Furniture",
+    "Custom-Made Furniture",
+    "Eco-Friendly Furniture",
+    "Living Room Furniture",
+    "Bedroom Furniture",
+    "Outdoor Furniture",
+    "Office Furniture",
+    "Furniture Store Near Me"
+  ],
   "author": "vikash pandat",
   "license": "ISC",
-  "description": "",
+  "description": "Discover a wide range of stylish, high-quality furniture designed to enhance every space in your home or office. From modern and affordable options to luxurious custom-made pieces, our collection includes eco-friendly designs, living room essentials, bedroom comfort, and outdoor durability. Whether you're searching for unique designs or simply the perfect addition to your space, we offer furniture that combines functionality and aesthetics to meet all your needs.",
   "type": "module",
   "dependencies": {
     "bcryptjs": "^2.4.3",
