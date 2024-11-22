@@ -18,7 +18,7 @@ export const createProduct = async (req, res) => {
 export const getAllProducts = async (req, res) => {
     try {
         // Get query parameters
-        const { page = 1, limit = 10, sortBy = 'price', order = 'asc', ...filters } = req.query;
+        const { page = 1, limit = 12, sortBy = 'price', order = 'asc', ...filters } = req.query;
 
         // Set pagination options
         const skip = (page - 1) * limit;
