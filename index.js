@@ -3,13 +3,16 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
-
+import path from 'path';
 import connectDB from './utils/dbConnection.js';
 import HouseRouter from './mvc/routes/houseRouter.js';
 import userRouter from './mvc/routes/userRouter.js';
 import productRouter from "./mvc/routes/productRouter.js";
 import reviewRouter from "./mvc/routes/reviewRouter.js";
+import { fileURLToPath } from 'url';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 productRouter
 // Load environment variables
 dotenv.config();
@@ -36,6 +39,7 @@ app.use(cors(corsOptions));
 
 // Set view engine
 app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
 // Routes
 app.use('/house', HouseRouter);
@@ -46,6 +50,7 @@ app.use('/reviews', reviewRouter)
 app.get('/', (req, res) => {
     res.render('index');
 });
+console.log(app.get('views'));
 
 
 // Error handling for unhandled routes
