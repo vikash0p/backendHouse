@@ -26,7 +26,7 @@ export const getAllProducts = async (req, res) => {
         const sortOrder = order === 'desc' ? -1 : 1;
 
         // Build the filter object dynamically
-        const filter = {};
+        const filter = {} ;
 
         // Search functionality: Match keyword in name or description
         if (search) {
