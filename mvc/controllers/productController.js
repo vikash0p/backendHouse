@@ -17,58 +17,116 @@ export const createProduct = async (req, res) => {
 // Get all products
 export const getAllProducts = async (req, res) => {
     try {
-        // Get query parameters
-        const { page = 1, limit = 12, sortBy = 'price', order = 'asc', search = '', minRating = 0, ...filters } = req.query;
+        const {
+            page = 1,
+            limit = 12,
+            sortBy = 'finalPrice',
+            order = 'asc',
+            search = '',
+            minPrice,
+            maxPrice,
+            minRating,
+            ...filters
+        } = req.query;
 
-        // Set pagination options
         const skip = (page - 1) * limit;
         const limitValue = parseInt(limit);
         const sortOrder = order === 'desc' ? -1 : 1;
 
-        // Build the filter object dynamically
         const filter = {};
 
-        // Search functionality: Match keyword in title or description
+        // Search filters
         if (search) {
             filter.$or = [
-                { title: { $regex: search, $options: 'i' } }, // Case-insensitive search in title
-                { description: { $regex: search, $options: 'i' } }, // Case-insensitive search in description
+                { title: { $regex: search, $options: 'i' } },
+                { description: { $regex: search, $options: 'i' } },
+                { category: { $regex: search, $options: 'i' } },
+                { brand: { $regex: search, $options: 'i' } },
+                { material: { $regex: search, $options: 'i' } },
             ];
         }
 
-        // Handle multiple filters
+        // Category filter
         if (filters.category) {
             filter.category = { $in: Array.isArray(filters.category) ? filters.category : filters.category.split(',') };
         }
+
+        // Brand filter
         if (filters.brand) {
             filter.brand = { $in: Array.isArray(filters.brand) ? filters.brand : filters.brand.split(',') };
         }
+
+        // Material filter
         if (filters.material) {
             filter.material = { $in: Array.isArray(filters.material) ? filters.material : filters.material.split(',') };
         }
-        if (filters.colors) {
-            const colors = Array.isArray(filters.colors) ? filters.colors : filters.colors.split(',');
-            filter.color = { $in: colors }; // Matches any color in the array
+
+        // Color filter
+        if (filters.color) {
+            const color = Array.isArray(filters.color) ? filters.color : filters.color.split(',');
+            filter.color = { $in: color };
+        }
+
+        // Location filter
+        if (filters.location) {
+            const location = Array.isArray(filters.location) ? filters.location : filters.location.split(',');
+            filter.location = { $in: location };
+        }
+
+        // Price filter
+        if (minPrice || maxPrice) {
+            const priceFilter = {};
+            if (minPrice) priceFilter.$gte = parseFloat(minPrice);
+            if (maxPrice) priceFilter.$lte = parseFloat(maxPrice);
+            filter.finalPrice = priceFilter;
         }
 
         // Rating filter
         if (minRating) {
-            filter.rating = { $gte: parseFloat(minRating) }; // Filter for ratings greater than or equal to minRating
+            filter.rating = { $gte: parseFloat(minRating) };
         }
 
-        // Fetch the products with filtering, sorting, and pagination
+        // Sorting logic
+        const sortOptions = {};
+        switch (sortBy) {
+            case 'priceHighToLow':
+                sortOptions.finalPrice = -1;
+                break;
+            case 'priceLowToHigh':
+                sortOptions.finalPrice = 1;
+                break;
+            case 'ratingHighToLow':
+                sortOptions.rating = -1;
+                break;
+            case 'ratingLowToHigh':
+                sortOptions.rating = 1;
+                break;
+            case 'alphabeticalAZ':
+                sortOptions.title = 1;
+                break;
+            case 'alphabeticalZA':
+                sortOptions.title = -1;
+                break;
+            default:
+                sortOptions[sortBy] = sortOrder; // Fallback to original sorting mechanism
+        }
+
+        console.log('Filter:', filter);
+        console.log('Sort Options:', sortOptions);
+
+        // Fetch filtered products
         const products = await Product.find(filter)
             .skip(skip)
             .limit(limitValue)
-            .sort({ [sortBy]: sortOrder });
+            .sort(sortOptions);
 
-        // Count the total number of products for pagination
         const totalProducts = await Product.countDocuments(filter);
 
         if (products.length === 0) {
-            return res.status(404).json({ success: false, message: "No products found" });
+            return res.status(404).json({ success: false, message: "No products found", products, totalProducts });
         }
 
+        // Send response
         res.status(200).json({
             success: true,
             message: 'Products fetched successfully',
@@ -78,10 +136,10 @@ export const getAllProducts = async (req, res) => {
             products,
         });
     } catch (error) {
+        console.error('Error fetching products:', error.message);
         res.status(500).json({ success: false, message: "Failed to fetch products", error: error.message });
     }
 };
-
 
 
 
@@ -90,12 +148,12 @@ export const getProductById = async (req, res) => {
     try {
         const { id } = req.params;
         const product = await Product.findById(id);
-        const review= await Review.find({ productId:id})
+        const review = await Review.find({ productId: id })
 
         if (!product) {
             return res.status(404).json({ success: false, message: "Product not found" });
         }
-        res.status(200).json({ success: true, message: "Product fetched successfully", product,review });
+        res.status(200).json({ success: true, message: "Product fetched successfully", product, review });
     } catch (error) {
         res.status(500).json({ success: false, message: "Failed to fetch product", error: error.message });
     }

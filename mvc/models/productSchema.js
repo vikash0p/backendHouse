@@ -8,7 +8,7 @@ const productSchema = new mongoose.Schema({
     category: { type: String, required: true },
     image: { type: String, required: true },
     origin: { type: String, default: "" },
-    originalPrice: { type: Number, required: true },
+    originalPrice: { type: Number, required: true, default: 0 },
     discount: { type: Number, default: 0 },
     finalPrice: { type: Number, required: true },
     quantity: { type: Number, default: 0 },
@@ -24,7 +24,7 @@ const productSchema = new mongoose.Schema({
     brand: { type: String, default: "" },
     weight: { type: Number, default: 0 },
     location: { type: [String], default: [] },
-});
+}, { timestamps: true });
 
 const Product = mongoose.model("Product", productSchema);
 export default Product;

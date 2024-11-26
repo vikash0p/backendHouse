@@ -1,12 +1,12 @@
-const furnitureList = Array.from({ length: 1 }, (_, index) => {
-    const originalPrice = (Math.random() * 1000 + 100).toFixed(0); // Random price between 100 and 1100
+const furnitureList = Array.from({ length: 5 }, (_, index) => {
+    const originalPrice = Number((Math.random() * 1000 + 100).toFixed(0)) ; // Random price between 100 and 1100
     const discount = Math.floor(Math.random() * 80); // Random discount between 0 and 80%
-    const finalPrice = (originalPrice - (originalPrice * (discount / 100))).toFixed(0); // Final price after discount
+    const finalPrice = Number((originalPrice - (originalPrice * (discount / 100))).toFixed(0)); // Final price after discount
 
     const reviews = Array.from({ length: 2 }, () => ({
         user: `User${Math.floor(Math.random() * 1000)}`,
         comment: `This is a great product. Highly recommended!`,
-        rating: Math.floor(Math.random() * 5) + 1, // Random review rating between 1 and 5
+        rating: Number((Math.random() * 5).toFixed(1)) , // Random review rating between 1 and 5
         date: new Date(Date.now() - Math.floor(Math.random() * 10000000000)).toISOString(),
     }));
 
@@ -35,7 +35,7 @@ const furnitureList = Array.from({ length: 1 }, (_, index) => {
             width: `${Math.floor(Math.random() * 50 + 50)}cm`,
             height: `${Math.floor(Math.random() * 50 + 50)}cm`,
         },
-        rating: (Math.random() * 5).toFixed(1),
+        rating: parseFloat(((Math.random() * 5) + 1).toFixed(1)),
         brand: ["IKEA", "Ashley Furniture Industries", "West Elm", "Restoration Hardware (RH)", "Crate & Barrel", "Herman Miller", "La-Z-Boy", "Ethan Allen", "Williams-Sonoma Home", "Pottery Barn"][Math.floor(Math.random() * 10)],
         weight: Math.floor(Math.random() * 100) + 10,
         review: reviews,
