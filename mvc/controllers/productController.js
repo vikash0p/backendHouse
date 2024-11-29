@@ -25,6 +25,7 @@ export const getAllProducts = async (req, res) => {
             minPrice,
             maxPrice,
             minRating,
+            discount,
             location, // Extract location
             ...filters
         } = req.query;
@@ -67,6 +68,11 @@ export const getAllProducts = async (req, res) => {
         if (minRating) {
             filter.rating = { $gte: parseFloat(minRating) };
         }
+
+        if(discount) {
+            filter.discount = { $gte: parseFloat(discount) };
+        }
+        console.log(filter)
 
         // Sorting options
         const sortOptions = {
