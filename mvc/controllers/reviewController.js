@@ -24,9 +24,10 @@ try {
 // Get all reviews
 export const getReviews = async (req, res) => {
     try {
-        const reviews = await Review.find()
-            .populate("userId", "name email") // Populate user details (select specific fields)
-            .populate("productId", "title category"); // Populate product details (select specific fields)
+        const reviews = (await Review.find()
+            .populate("userId", "name email")
+            .populate("productId", "title category"))
+            .reverse(); // Reverse the order of reviews
 
         res.status(200).json({ success: true, reviews });
     } catch (error) {

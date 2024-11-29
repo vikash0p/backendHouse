@@ -21,7 +21,6 @@ export const getAllProducts = async (req, res) => {
             page = 1,
             limit = 12,
             sortBy = 'finalPrice',
-            order = 'asc',
             search = '',
             minPrice,
             maxPrice,
@@ -30,55 +29,28 @@ export const getAllProducts = async (req, res) => {
         } = req.query;
 
         const skip = (page - 1) * limit;
-        const limitValue = parseInt(limit);
-        const sortOrder = order === 'desc' ? -1 : 1;
-
         const filter = {};
 
         // Search filters
         if (search) {
-            filter.$or = [
-                { title: { $regex: search, $options: 'i' } },
-                { description: { $regex: search, $options: 'i' } },
-                { category: { $regex: search, $options: 'i' } },
-                { brand: { $regex: search, $options: 'i' } },
-                { material: { $regex: search, $options: 'i' } },
-            ];
+            filter.$or = ['title', 'description', 'category', 'brand', 'material'].map((field) => ({
+                [field]: { $regex: search, $options: 'i' },
+            }));
         }
 
-        // Category filter
-        if (filters.category) {
-            filter.category = { $in: Array.isArray(filters.category) ? filters.category : filters.category.split(',') };
-        }
-
-        // Brand filter
-        if (filters.brand) {
-            filter.brand = { $in: Array.isArray(filters.brand) ? filters.brand : filters.brand.split(',') };
-        }
-
-        // Material filter
-        if (filters.material) {
-            filter.material = { $in: Array.isArray(filters.material) ? filters.material : filters.material.split(',') };
-        }
-
-        // Color filter
-        if (filters.color) {
-            const color = Array.isArray(filters.color) ? filters.color : filters.color.split(',');
-            filter.color = { $in: color };
-        }
-
-        // Location filter
-        if (filters.location) {
-            const location = Array.isArray(filters.location) ? filters.location : filters.location.split(',');
-            filter.location = { $in: location };
-        }
+        // Dynamic filter generation for array-based filters
+        ['category', 'brand', 'material', 'color', 'location'].forEach((key) => {
+            if (filters[key] && Array.isArray(filters[key])) {
+                filter[key] = { $in: filters[key] };
+            }
+        });
 
         // Price filter
         if (minPrice || maxPrice) {
-            const priceFilter = {};
-            if (minPrice) priceFilter.$gte = parseFloat(minPrice);
-            if (maxPrice) priceFilter.$lte = parseFloat(maxPrice);
-            filter.finalPrice = priceFilter;
+            filter.finalPrice = {
+                ...(minPrice && { $gte: parseFloat(minPrice) }),
+                ...(maxPrice && { $lte: parseFloat(maxPrice) }),
+            };
         }
 
         // Rating filter
@@ -86,52 +58,31 @@ export const getAllProducts = async (req, res) => {
             filter.rating = { $gte: parseFloat(minRating) };
         }
 
-        // Sorting logic
-        const sortOptions = {};
-        switch (sortBy) {
-            case 'priceHighToLow':
-                sortOptions.finalPrice = -1;
-                break;
-            case 'priceLowToHigh':
-                sortOptions.finalPrice = 1;
-                break;
-            case 'ratingHighToLow':
-                sortOptions.rating = -1;
-                break;
-            case 'ratingLowToHigh':
-                sortOptions.rating = 1;
-                break;
-            case 'alphabeticalAZ':
-                sortOptions.title = 1;
-                break;
-            case 'alphabeticalZA':
-                sortOptions.title = -1;
-                break;
-            default:
-                sortOptions[sortBy] = sortOrder; // Fallback to original sorting mechanism
-        }
+        // Sorting options
+        const sortOptions = {
+            priceHighToLow: { finalPrice: -1 },
+            priceLowToHigh: { finalPrice: 1 },
+            ratingHighToLow: { rating: -1 },
+            ratingLowToHigh: { rating: 1 },
+            alphabeticalAZ: { title: 1 },
+            alphabeticalZA: { title: -1 },
+        }[sortBy] || { [sortBy]: 1 };
 
-        console.log('Filter:', filter);
-        console.log('Sort Options:', sortOptions);
+        // Fetch data
+        const [products, totalProducts] = await Promise.all([
+            Product.find(filter).skip(skip).limit(parseInt(limit)).sort(sortOptions),
+            Product.countDocuments(filter),
+        ]);
 
-        // Fetch filtered products
-        const products = await Product.find(filter)
-            .skip(skip)
-            .limit(limitValue)
-            .sort(sortOptions);
-
-        const totalProducts = await Product.countDocuments(filter);
-
-        if (products.length === 0) {
+        if (!products.length) {
             return res.status(404).json({ success: false, message: "No products found", products, totalProducts });
         }
 
-        // Send response
         res.status(200).json({
             success: true,
             message: 'Products fetched successfully',
             totalProducts,
-            totalPages: Math.ceil(totalProducts / limitValue),
+            totalPages: Math.ceil(totalProducts / limit),
             currentPage: parseInt(page),
             products,
         });
@@ -140,6 +91,8 @@ export const getAllProducts = async (req, res) => {
         res.status(500).json({ success: false, message: "Failed to fetch products", error: error.message });
     }
 };
+
+
 
 
 
