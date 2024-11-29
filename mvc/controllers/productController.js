@@ -25,6 +25,7 @@ export const getAllProducts = async (req, res) => {
             minPrice,
             maxPrice,
             minRating,
+            location, // Extract location
             ...filters
         } = req.query;
 
@@ -39,11 +40,20 @@ export const getAllProducts = async (req, res) => {
         }
 
         // Dynamic filter generation for array-based filters
-        ['category', 'brand', 'material', 'color', 'location'].forEach((key) => {
+        ['category', 'brand', 'material', 'color'].forEach((key) => {
             if (filters[key] && Array.isArray(filters[key])) {
                 filter[key] = { $in: filters[key] };
             }
         });
+
+        // Location filter (handles both string and array)
+        if (location) {
+            if (Array.isArray(location)) {
+                filter.location = { $in: location }; // For arrays, match any location in the array
+            } else {
+                filter.location = location; // For strings, match the exact location
+            }
+        }
 
         // Price filter
         if (minPrice || maxPrice) {
