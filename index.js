@@ -32,7 +32,7 @@ app.use(morgan('dev'));
 
 // CORS configuration
 const corsOptions = {
-    origin: process.env.CORS_ORIGIN || 'http://localhost:3000' || process.env.CORS_URL,
+    origin: process.env.CORS_ORIGIN || 'http://localhost:3000' || process.env.FRONTAND_URL,
     credentials: true,
 };
 app.use(cors(corsOptions));
