@@ -35,7 +35,7 @@ const corsOptions = {
     origin: ['http://localhost:3000', 'https://luxe-furniture-ecommerce.vercel.app', 'https://luxe-furniture-ecommerce.vercel.app/*', '*'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Cache-Control'], // Allow necessary headers
 
 
 };
