@@ -5,7 +5,6 @@ import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import path from 'path';
 import connectDB from './utils/dbConnection.js';
-import HouseRouter from './mvc/routes/houseRouter.js';
 import userRouter from './mvc/routes/userRouter.js';
 import productRouter from "./mvc/routes/productRouter.js";
 import reviewRouter from "./mvc/routes/reviewRouter.js";
@@ -47,7 +46,6 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 // Routes
-app.use('/house', HouseRouter);
 app.use('/auth', userRouter);
 app.use('/furniture', productRouter)
 app.use('/reviews', reviewRouter)
