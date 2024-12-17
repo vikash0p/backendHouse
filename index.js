@@ -31,7 +31,7 @@ app.use(morgan('dev'));
 
 // CORS configuration
 const corsOptions = {
-    origin: ['http://localhost:3000', 'https://luxe-furniture-ecommerce.vercel.app', 'https://luxe-furniture-ecommerce.vercel.app/*', '*'],
+    origin: ['http://localhost:3000', 'http://localhost:8081', 'https://luxe-furniture-ecommerce.vercel.app', 'https://luxe-furniture-ecommerce.vercel.app/*', '*'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Cache-Control'], // Allow necessary headers

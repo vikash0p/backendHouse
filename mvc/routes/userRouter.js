@@ -9,4 +9,7 @@ userRouter.post('/login',  LoginUser);
 userRouter.delete('/logout', LogoutUser);
 userRouter.get('/getUserDetails',AuthMiddleware, getUserDetails);
 
+
+
+
 export default userRouter;
