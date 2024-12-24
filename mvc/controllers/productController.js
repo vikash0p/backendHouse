@@ -20,7 +20,7 @@ export const getAllProducts = async (req, res) => {
         const {
             page = 1,
             limit = 12,
-            sortBy = 'finalPrice',
+            sortBy = '',
             search = '',
             minPrice,
             maxPrice,
@@ -76,6 +76,7 @@ export const getAllProducts = async (req, res) => {
 
         // Sorting options
         const sortOptions = {
+            
             priceHighToLow: { finalPrice: -1 },
             priceLowToHigh: { finalPrice: 1 },
             ratingHighToLow: { rating: -1 },
