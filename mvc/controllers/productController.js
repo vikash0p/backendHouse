@@ -76,6 +76,7 @@ export const getAllProducts = async (req, res) => {
 
         // Sorting options
         const sortOptions = {
+            default: { _id: -1 },
             priceHighToLow: { finalPrice: -1 },
             priceLowToHigh: { finalPrice: 1 },
             ratingHighToLow: { rating: -1 },
