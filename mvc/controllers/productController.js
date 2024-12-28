@@ -41,11 +41,24 @@ export const getAllProducts = async (req, res) => {
         }
 
         // Dynamic filter generation for array-based filters
+        // ['category', 'brand', 'material', 'color'].forEach((key) => {
+        //     if (filters[key] && Array.isArray(filters[key])) {
+        //         filter[key] = { $in: filters[key] };
+        //     }
+        // });
+
         ['category', 'brand', 'material', 'color'].forEach((key) => {
-            if (filters[key] && Array.isArray(filters[key])) {
-                filter[key] = { $in: filters[key] };
+            if (filters[key]) {
+                if (Array.isArray(filters[key])) {
+                    // Handle multi-value (array) case
+                    filter[key] = { $in: filters[key] };
+                } else {
+                    // Handle single-value case
+                    filter[key] = filters[key];
+                }
             }
         });
+
 
         // Location filter (handles both string and array)
         if (location) {
