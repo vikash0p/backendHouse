@@ -429,6 +429,7 @@ export const getProductsByFilter = async (req, res) => {
             products,
         });
     } catch (error) {
+        
         console.error(`Error fetching products by ${req.params.filterType}:`, error.message);
         res.status(500).json({ success: false, message: "Failed to fetch products", error: error.message });
     }
