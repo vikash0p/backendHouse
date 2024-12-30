@@ -1,4 +1,3 @@
-
 import mongoose from "mongoose";
 const productSchema = new mongoose.Schema({
     id: { type: String, required: true, unique: true },
@@ -24,6 +23,8 @@ const productSchema = new mongoose.Schema({
     brand: { type: String, default: "" },
     weight: { type: Number, default: 0 },
     location: { type: [String], default: [] },
+    views: { type: Number, default: 0 }, // Added for tracking trending products
+    sales: { type: Number, default: 0 }, // Added for tracking best sellers
 }, { timestamps: true });
 
 const Product = mongoose.model("Product", productSchema);

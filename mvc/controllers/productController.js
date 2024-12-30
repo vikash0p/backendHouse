@@ -47,7 +47,7 @@ export const getAllProducts = async (req, res) => {
         //     }
         // });
 
-        ['category', 'brand', 'material', 'color'].forEach((key) => {
+        ['category', 'brand', 'material', 'color','location'].forEach((key) => {
             if (filters[key]) {
                 if (Array.isArray(filters[key])) {
                     // Handle multi-value (array) case
@@ -168,5 +168,80 @@ export const deleteProduct = async (req, res) => {
         res.status(200).json({ success: true, message: "Product deleted successfully" });
     } catch (error) {
         res.status(500).json({ success: false, message: "Failed to delete product", error: error.message });
+    }
+};
+
+
+
+// Get trending products
+export const getTrendingProducts = async (req, res) => {
+    try {
+        const { limit = 10 } = req.query;
+
+        // Trending logic: Sort by most views, purchases, or other relevant metric
+        const trendingProducts = await Product.find({})
+            .sort({ views: -1 }) // Assuming a 'views' field exists
+            .limit(parseInt(limit));
+
+        if (!trendingProducts.length) {
+            return res.status(404).json({ success: false, message: "No trending products found" });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Trending products fetched successfully",
+            totalProducts: trendingProducts.length,
+            products: trendingProducts,
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Failed to fetch trending products", error: error.message });
+    }
+};
+
+// Get best seller products
+export const getBestSellers = async (req, res) => {
+    try {
+        const { limit = 10 } = req.query;
+
+        // Best seller logic: Sort by highest sales
+        const bestSellers = await Product.find({})
+            .sort({ sales: -1 }) // Assuming a 'sales' field exists
+            .limit(parseInt(limit));
+
+        if (!bestSellers.length) {
+            return res.status(404).json({ success: false, message: "No best sellers found" });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Best sellers fetched successfully",
+            products: bestSellers,
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Failed to fetch best sellers", error: error.message });
+    }
+};
+
+// Get new arrival products
+export const getNewArrivals = async (req, res) => {
+    try {
+        const { limit = 10 } = req.query;
+
+        // New arrival logic: Sort by creation date
+        const newArrivals = await Product.find({})
+            .sort({ createdAt: -1 }) // Assuming a 'createdAt' field exists
+            .limit(parseInt(limit));
+
+        if (!newArrivals.length) {
+            return res.status(404).json({ success: false, message: "No new arrivals found" });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "New arrivals fetched successfully",
+            products: newArrivals,
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Failed to fetch new arrivals", error: error.message });
     }
 };
