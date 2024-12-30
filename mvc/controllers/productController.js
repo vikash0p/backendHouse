@@ -245,3 +245,49 @@ export const getNewArrivals = async (req, res) => {
         res.status(500).json({ success: false, message: "Failed to fetch new arrivals", error: error.message });
     }
 };
+
+
+export const getCategories = async (req, res) => {
+    try {
+        const categories = await Product.distinct("category");
+        if (!categories.length) {
+            return res.status(404).json({ success: false, message: "No categories found" });
+        }
+        res.status(200).json({ success: true, message: "Categories fetched successfully", categories });
+    } catch (error) {
+        console.error("Error fetching categories:", error.message);
+        res.status(500).json({ success: false, message: "Failed to fetch categories", error: error.message });
+    }
+};
+
+// Get products by category
+export const getProductsByCategory = async (req, res) => {
+    try {
+        const { category } = req.params;
+        const { page = 1, limit = 12 } = req.query;
+
+        const skip = (page - 1) * limit;
+        const filter = { category };
+
+        const [products, totalProducts] = await Promise.all([
+            Product.find(filter).skip(skip).limit(parseInt(limit)),
+            Product.countDocuments(filter),
+        ]);
+
+        if (!products.length) {
+            return res.status(404).json({ success: false, message: `No products found in category: ${category}` });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: `Products in category: ${category} fetched successfully`,
+            totalProducts,
+            totalPages: Math.ceil(totalProducts / limit),
+            currentPage: parseInt(page),
+            products,
+        });
+    } catch (error) {
+        console.error("Error fetching products by category:", error.message);
+        res.status(500).json({ success: false, message: "Failed to fetch products by category", error: error.message });
+    }
+};
