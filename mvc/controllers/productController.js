@@ -260,6 +260,36 @@ export const getCategories = async (req, res) => {
     }
 };
 
+
+
+// Get all unique brands
+export const getBrands = async (req, res) => {
+    try {
+        const brands = await Product.distinct("brand");
+        if (!brands.length) {
+            return res.status(404).json({ success: false, message: "No brands found" });
+        }
+        res.status(200).json({ success: true, message: "Brands fetched successfully", brands });
+    } catch (error) {
+        console.error("Error fetching brands:", error.message);
+        res.status(500).json({ success: false, message: "Failed to fetch brands", error: error.message });
+    }
+};
+// Get all unique materials
+export const getMaterials = async (req, res) => {
+    try {
+        const materials = await Product.distinct("material");
+        if (!materials.length) {
+            return res.status(404).json({ success: false, message: "No materials found" });
+        }
+        res.status(200).json({ success: true, message: "Materials fetched successfully", materials });
+    } catch (error) {
+        console.error("Error fetching materials:", error.message);
+        res.status(500).json({ success: false, message: "Failed to fetch materials", error: error.message });
+    }
+};
+
+
 // Get products by category
 export const getProductsByCategory = async (req, res) => {
     try {
@@ -291,3 +321,120 @@ export const getProductsByCategory = async (req, res) => {
         res.status(500).json({ success: false, message: "Failed to fetch products by category", error: error.message });
     }
 };
+
+
+// Get products by brand
+export const getProductsByBrand = async (req, res) => {
+    try {
+        const { brand } = req.params;
+        const { page = 1, limit = 12 } = req.query;
+
+        const filter = { brand };
+
+        const options = {
+            skip: (page - 1) * limit,
+            limit: parseInt(limit),
+        };
+
+        const [products, totalProducts] = await Promise.all([
+            Product.find(filter, null, options),
+            Product.countDocuments(filter),
+        ]);
+
+        if (!products.length) {
+            return res.status(404).json({ success: false, message: `No products found for brand: ${brand}` });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: `Products for brand: ${brand} fetched successfully`,
+            totalProducts,
+            totalPages: Math.ceil(totalProducts / limit),
+            currentPage: parseInt(page),
+            products,
+        });
+    } catch (error) {
+        console.error("Error fetching products by brand:", error.message);
+        res.status(500).json({ success: false, message: "Failed to fetch products by brand", error: error.message });
+    }
+};
+
+// Get products by material
+export const getProductsByMaterial = async (req, res) => {
+    try {
+        const { material } = req.params;
+        const { page = 1, limit = 12 } = req.query;
+
+        const filter = { material };
+
+        const options = {
+            skip: (page - 1) * limit,
+            limit: parseInt(limit),
+        };
+
+        const [products, totalProducts] = await Promise.all([
+            Product.find(filter, null, options),
+            Product.countDocuments(filter),
+        ]);
+
+        if (!products.length) {
+            return res.status(404).json({ success: false, message: `No products found with material: ${material}` });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: `Products with material: ${material} fetched successfully`,
+            totalProducts,
+            totalPages: Math.ceil(totalProducts / limit),
+            currentPage: parseInt(page),
+            products,
+        });
+    } catch (error) {
+        console.error("Error fetching products by material:", error.message);
+        res.status(500).json({ success: false, message: "Failed to fetch products by material", error: error.message });
+    }
+};
+
+
+
+
+// Simplified API to get products by category, brand, or material
+export const getProductsByFilter = async (req, res) => {
+    try {
+        const { filterType, filterValue } = req.params; // Extract filter type and value from route params
+        const { page = 1, limit = 12 } = req.query;
+
+        // Validate filter type
+        if (!["category", "brand", "material"].includes(filterType)) {
+            return res.status(400).json({ success: false, message: `Invalid filter type: ${filterType}` });
+        }
+
+        const filter = { [filterType]: filterValue };
+        const skip = (page - 1) * limit;
+        const limitParsed = parseInt(limit);
+
+        const products = await Product.find(filter).skip(skip).limit(limitParsed);
+        const totalProducts = await Product.countDocuments(filter);
+
+        if (!products.length) {
+            return res.status(404).json({ success: false, message: `No products found for ${filterType}: ${filterValue}` });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: `Products for ${filterType}: ${filterValue} fetched successfully`,
+            totalProducts,
+            totalPages: Math.ceil(totalProducts / limitParsed),
+            currentPage: parseInt(page),
+            products,
+        });
+    } catch (error) {
+        console.error(`Error fetching products by ${req.params.filterType}:`, error.message);
+        res.status(500).json({ success: false, message: "Failed to fetch products", error: error.message });
+    }
+};
+
+
+
+
+
