@@ -1,5 +1,5 @@
 import express from "express";
-import { createProduct,getAllProducts,getProductById,updateProduct,deleteProduct,getBestSellers,getNewArrivals,getTrendingProducts,getCategories,getProductsByCategory ,} from "../controllers/productController.js";
+import { createProduct,getAllProducts,getProductById,updateProduct,deleteProduct,getBestSellers,getNewArrivals,getTrendingProducts,getCategories,getProductsByCategory,getProductsByFilter } from "../controllers/productController.js";
 
 
 const productRouter = express.Router();
@@ -15,6 +15,9 @@ productRouter.get("/bestsellers", getBestSellers);
 productRouter.get("/newArrivals", getNewArrivals);
 productRouter.get("/category", getCategories);
 productRouter.get("/category/:category", getProductsByCategory);
+
+
+productRouter.get("/products/:filterType/:filterValue", getProductsByFilter);
 
 
 
