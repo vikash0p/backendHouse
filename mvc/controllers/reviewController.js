@@ -94,3 +94,30 @@ export const deleteReview = async (req, res) => {
         res.status(500).json({ success: false, message: "Failed to delete review", error: error.message });
     }
 };
+
+
+// Get reviews by Product ID
+export const getReviewsByProductId = async (req, res) => {
+    try {
+        const { productId } = req.params;
+
+        // Validate input
+        if (!productId) {
+            return res.status(400).json({ success: false, message: "Product ID is required" });
+        }
+
+        // Fetch reviews for the specified product ID
+        const reviews = await Review.find({ productId })
+            .populate("userId", "name email")
+            .populate("productId", "title category");
+
+        if (reviews.length === 0) {
+            return res.status(404).json({ success: false, message: "No reviews found for this product" });
+        }
+
+        res.status(200).json({ success: true, reviews });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Failed to fetch reviews", error: error.message });
+    }
+};
+
