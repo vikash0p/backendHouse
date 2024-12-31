@@ -106,18 +106,27 @@ export const getReviewsByProductId = async (req, res) => {
             return res.status(400).json({ success: false, message: "Product ID is required" });
         }
 
-        // Fetch reviews for the specified product ID
+        // Fetch reviews for the specified product ID, sorted by creation date (newest first)
         const reviews = await Review.find({ productId })
             .populate("userId", "name email")
-            .populate("productId", "title category");
+            .populate("productId", "title category")
+            .sort({ createdAt: -1 }); // Sort by `createdAt` in descending order
 
         if (reviews.length === 0) {
             return res.status(404).json({ success: false, message: "No reviews found for this product" });
         }
 
-        res.status(200).json({ success: true, reviews });
+        // Calculate average rating
+        const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+        const averageRating = (totalRating / reviews.length).toFixed(1);
+
+        res.status(200).json({
+            success: true,
+            averageRating,
+            message: "Reviews fetched successfully",
+            reviews,
+        });
     } catch (error) {
         res.status(500).json({ success: false, message: "Failed to fetch reviews", error: error.message });
     }
 };
-
