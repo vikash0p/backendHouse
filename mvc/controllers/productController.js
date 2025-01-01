@@ -180,7 +180,7 @@ export const getTrendingProducts = async (req, res) => {
 
         // Trending logic: Sort by most views, purchases, or other relevant metric
         const trendingProducts = await Product.find({})
-            .sort({ views: -1 }) // Assuming a 'views' field exists
+            .sort({ views: -1 })
             .limit(parseInt(limit));
 
         if (!trendingProducts.length) {
@@ -429,9 +429,36 @@ export const getProductsByFilter = async (req, res) => {
             products,
         });
     } catch (error) {
-        
+
         console.error(`Error fetching products by ${req.params.filterType}:`, error.message);
         res.status(500).json({ success: false, message: "Failed to fetch products", error: error.message });
+    }
+};
+
+
+
+export const incrementProductViews = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Increment views by 1
+        const updatedProduct = await Product.findByIdAndUpdate(
+            id,
+            { $inc: { views: 1 } },
+            { new: true }
+        );
+
+        if (!updatedProduct) {
+            return res.status(404).json({ success: false, message: "Product not found" });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Product views incremented successfully",
+            product: updatedProduct,
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Failed to increment views", error: error.message });
     }
 };
 

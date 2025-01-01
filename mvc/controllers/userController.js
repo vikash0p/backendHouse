@@ -34,11 +34,11 @@ export const LoginUser = async (req, res) => {
 
     if (user && isPasswordCorrect) {
 
-        const token = jwt.sign({ id: user._id }, process.env.JWT_TOKEN, { expiresIn: "1h" });
+        const token = jwt.sign({ id: user._id }, process.env.JWT_TOKEN, { expiresIn: "7d" });
 
         res.cookie("token", token, {
             path: '/',
-            expires: new Date(Date.now() + 60 * 60 * 1000),
+            expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
             httpOnly: true,
             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
             secure: process.env.NODE_ENV === 'production', // Only secure in production
