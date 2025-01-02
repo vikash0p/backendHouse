@@ -19,6 +19,7 @@ productRouter.get("/category/:category", getProductsByCategory);
 
 productRouter.get("/products/:filterType/:filterValue", getProductsByFilter);
 productRouter.patch('/products/:id/views', incrementProductViews);
+productRouter.patch('/products/:id/sales', incrementProductViews);
 
 
 
