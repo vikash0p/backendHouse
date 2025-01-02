@@ -4,6 +4,8 @@ import Product from "../models/productSchema.js";
 // Add item to cart
 export const addProductToCart = async (req, res) => {
     const { userId, productId, quantity } = req.body;
+    console.log("🚀 ~ file: cartController.js:7 ~ req.body:", req.body);
+    console.log("🚀 ~ file: cartController.js:7 ~ productId:", productId);
 
     try {
         // Validate product
@@ -34,15 +36,23 @@ export const addProductToCart = async (req, res) => {
             });
         }
 
+        // Reverse the items array
+        cart.items.reverse();
+
         // Update total amount
         cart.totalAmount = cart.items.reduce((sum, item) => sum + item.price, 0);
 
         await cart.save();
-        res.status(200).json({ message: "Item added to cart successfully", cart });
+        res.status(200).json({
+            message: "Item added to cart successfully",
+            cartLength: cart.items.length,
+            cart
+        });
     } catch (error) {
         res.status(500).json({ message: "Failed to add item to cart", error });
     }
 };
+
 
 // Remove item from cart
 export const removeProductFromCart = async (req, res) => {
