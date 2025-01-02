@@ -77,7 +77,7 @@ export const removeProductFromCart = async (req, res) => {
         cart.totalAmount = cart.items.reduce((sum, item) => sum + item.price, 0);
 
         await cart.save();
-        res.status(200).json({ message: "Item removed from cart successfully", cart });
+        res.status(200).json({ message: "Item removed from cart successfully",cartLength: cart.items.length, cart });
     } catch (error) {
         res.status(500).json({ message: "Failed to remove item from cart", error });
     }
@@ -93,7 +93,11 @@ export const getCart = async (req, res) => {
             return res.status(404).json({ message: "Cart not found" });
         }
 
-        res.status(200).json(cart);
+        res.status(200).json({
+            message: "Cart fetched successfully",
+            cartLength: cart.items.length,
+            cart,
+        });
     } catch (error) {
         res.status(500).json({ message: "Failed to fetch cart", error });
     }
@@ -127,7 +131,7 @@ export const updateCart = async (req, res) => {
         cart.totalAmount = cart.items.reduce((sum, item) => sum + item.price, 0);
 
         await cart.save();
-        res.status(200).json({ message: "Cart updated successfully", cart });
+        res.status(200).json({ message: "Cart updated successfully", cart ,cartLength: cart.items.length});
     } catch (error) {
         res.status(500).json({ message: "Failed to update cart", error });
     }
