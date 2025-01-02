@@ -1,13 +1,16 @@
 import express from 'express';
-import { addProductToCart, removeProductFromCart, getCart, updateCart, } from '../controllers/cartController.js';
+import {addItemToCart,deleteCartItem,updateCartItem,getCart } from '../controllers/cartController.js';
 
 const cartRouter = express.Router();
-// post request
-cartRouter.post('/add', addProductToCart);
-cartRouter.post('/remove', removeProductFromCart);
-cartRouter.post('/update', updateCart);
+cartRouter.post("/add", addItemToCart);
 
-// get request
-cartRouter.get('/get', getCart);
+// Get cart for a user
+cartRouter.get("/get/:userId", getCart);
+
+// Update item in cart
+cartRouter.put("/update/:cartItemId", updateCartItem);
+
+// Delete item from cart
+cartRouter.delete("/delete/:cartItemId", deleteCartItem);
 
 export default cartRouter;
