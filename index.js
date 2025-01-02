@@ -9,6 +9,8 @@ import userRouter from './mvc/routes/userRouter.js';
 import productRouter from "./mvc/routes/productRouter.js";
 import reviewRouter from "./mvc/routes/reviewRouter.js";
 import { fileURLToPath } from 'url';
+import cartRouter from "./mvc/routes/cartRouter.js";
+import wishlistRouter from "./mvc/routes/wishlistRouter.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -49,6 +51,8 @@ app.set('views', path.join(__dirname, 'views'));
 app.use('/auth', userRouter);
 app.use('/furniture', productRouter)
 app.use('/reviews', reviewRouter)
+app.use('/cart',cartRouter);
+app.use('/wishlist',wishlistRouter);
 
 app.get('/', (req, res) => {
     res.render('index');

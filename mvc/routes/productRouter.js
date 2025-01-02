@@ -1,27 +1,32 @@
 import express from "express";
-import { createProduct,getAllProducts,getProductById,updateProduct,deleteProduct,getBestSellers,getNewArrivals,getTrendingProducts,getCategories,getProductsByCategory,getProductsByFilter,incrementProductViews } from "../controllers/productController.js";
+import { createProduct,getAllProducts,getProductById,updateProduct,deleteProduct,getBestSellers,getNewArrivals,getTrendingProducts,getCategories,getProductsByCategory,getProductsByFilter,incrementProductViews,incrementProductSales } from "../controllers/productController.js";
 
 
 const productRouter = express.Router();
 
+// post request
 productRouter.post("/products", createProduct);
+
+// get request
 productRouter.get("/products", getAllProducts);
 productRouter.get("/products/:id", getProductById);
-productRouter.put("/products/:id", updateProduct);
-productRouter.delete("/products/:id", deleteProduct);
-
 productRouter.get("/trending", getTrendingProducts);
 productRouter.get("/bestsellers", getBestSellers);
 productRouter.get("/newArrivals", getNewArrivals);
 productRouter.get("/category", getCategories);
 productRouter.get("/category/:category", getProductsByCategory);
-
-
 productRouter.get("/products/:filterType/:filterValue", getProductsByFilter);
+
+
+// patch request
 productRouter.patch('/products/:id/views', incrementProductViews);
-productRouter.patch('/products/:id/sales', incrementProductViews);
+productRouter.patch('/products/:id/sales', incrementProductSales);
 
+// put request
+productRouter.put("/products/:id", updateProduct);
 
+// delete request
+productRouter.delete("/products/:id", deleteProduct);
 
 
 
