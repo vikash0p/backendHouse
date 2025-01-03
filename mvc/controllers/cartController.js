@@ -104,7 +104,7 @@ export const getCart = async (req, res) => {
             cartId: cart._id,
             userId: cart.userId,
             totalProducts,
-            totalQuantity:cart.items.length,
+            totalQuantity: cart.items.length,
             totalAmount,
             items: cart.items.map((item) => ({
                 id: item._id,
@@ -112,11 +112,11 @@ export const getCart = async (req, res) => {
                 title: item.productId.title,
                 image: item.productId.image,
                 color: item.color,
+                availableColors: item.productId.color,
                 quantity: item.quantity,
                 price: item.price,
-                total: item.price * item.quantity, // Total for this item
+                total: item.price * item.quantity, 
             })),
-
         };
 
         res.status(200).json(response);
