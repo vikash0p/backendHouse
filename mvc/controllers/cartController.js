@@ -47,7 +47,7 @@ export const addItemToCart = async (req, res) => {
         if (existingItem) {
             // Check if the updated quantity exceeds the limit
             if (existingItem.quantity + quantity > 5) {
-                return res.status(400).json({ message: "Quantity for each product cannot exceed 5." });
+                return res.status(400).json({ message: "Only  5 item can be added to the cart." });
             }
             // Update quantity if the item already exists
             existingItem.quantity += quantity;
@@ -115,7 +115,7 @@ export const getCart = async (req, res) => {
                 availableColors: item.productId.color,
                 quantity: item.quantity,
                 price: item.price,
-                total: item.price * item.quantity, 
+                total: item.price * item.quantity,
             })),
         };
 
