@@ -7,7 +7,7 @@ export const addItemToCart = async (req, res) => {
 
     // Validate request body
     if (!userId || !productId || !color || !quantity) {
-        return res.status(400).json({ message: "All fields are required." });
+        return res.status(400).json({ message: `All fields are required. ${userId}, ${productId}, ${color}, ${quantity}` });
     }
 
     if (quantity <= 0 || quantity > 5) {
