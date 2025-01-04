@@ -69,7 +69,7 @@ export const getWishlist = async (req, res) => {
 
     try {
         // Fetch wishlist for the user and populate product details
-        const wishlist = await Wishlist.findOne({ userId }).populate("items.productId", "title image finalPrice");
+        const wishlist = await Wishlist.findOne({ userId }).populate("items.productId", "title image finalPrice color");
 
         if (!wishlist) {
             return res.status(404).json({ message: "Wishlist not found." });
@@ -83,6 +83,7 @@ export const getWishlist = async (req, res) => {
                 title: item.productId.title,
                 image: item.productId.image,
                 price: item.productId.finalPrice,
+                color: item.color,
                 addedAt: item.addedAt,
             }))
         });
