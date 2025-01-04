@@ -31,7 +31,7 @@ export const addItemToWishlist = async (req, res) => {
         }
 
         // Check for duplicates in the wishlist
-        const isDuplicate = wishlist.items.find((item) => item.productId._id.toString() === productId  && item.color === color );
+        const isDuplicate = wishlist.items.find((item) => item.productId._id.toString() === productId && item.color === color);
         console.log("🚀 ~ file: wishlistController.js:34 ~ isDuplicate:", isDuplicate);
 
         if (isDuplicate) {
@@ -67,47 +67,30 @@ export const addItemToWishlist = async (req, res) => {
 export const getWishlist = async (req, res) => {
     const { userId } = req.params;
 
-    if (!userId) {
-        return res.status(400).json({ message: "User ID is required." });
-    }
-
     try {
         // Fetch wishlist for the user and populate product details
-        const wishlist = await Wishlist.findOne({ userId }).populate("items.productId", "title image finalPrice color");
-        console.log("🚀 ~ file: wishlistController.js:71 ~ wishlist:", wishlist);
+        const wishlist = await Wishlist.findOne({ userId }).populate("items.productId", "title image finalPrice");
 
-        if (!wishlist || wishlist.items.length === 0) {
-            return res.status(404).json({ message: "Wishlist is empty or not found." });
+        if (!wishlist) {
+            return res.status(404).json({ message: "Wishlist not found." });
         }
 
-        // Remove duplicate items based on productId and color
-        const uniqueItemsMap = new Map();
-        wishlist.items.forEach((item) => {
-            const uniqueKey = `${item.productId?._id}-${item.color}`;
-            if (!uniqueItemsMap.has(uniqueKey)) {
-                uniqueItemsMap.set(uniqueKey, {
-                    id: item._id,
-                    productId: item.productId?._id,
-                    title: item.productId?.title,
-                    image: item.productId?.image,
-                    price: item.productId?.finalPrice,
-                    color: item.color,
-                    addedAt: item.addedAt,
-                });
-            }
-        });
-
-        const uniqueItems = Array.from(uniqueItemsMap.values());
-
-        console.log(uniqueItems);
         res.status(200).json({
             userId: wishlist.userId,
-            items: uniqueItems,
+            items: wishlist.items.map((item) => ({
+                id: item._id,
+                productId: item.productId._id,
+                title: item.productId.title,
+                image: item.productId.image,
+                price: item.productId.finalPrice,
+                addedAt: item.addedAt,
+            }))
         });
     } catch (error) {
-        res.status(500).json({ message: "An error occurred while fetching the wishlist.", error: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
+
 
 
 
