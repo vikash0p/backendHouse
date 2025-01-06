@@ -1,5 +1,6 @@
 import Product from "../models/productSchema.js";
 import Review from "../models/reviewSchema.js";
+import User from "../models/userSchema.js";
 
 
 // Create a new product
@@ -47,7 +48,7 @@ export const getAllProducts = async (req, res) => {
         //     }
         // });
 
-        ['category', 'brand', 'material', 'color','location'].forEach((key) => {
+        ['category', 'brand', 'material', 'color', 'location'].forEach((key) => {
             if (filters[key]) {
                 if (Array.isArray(filters[key])) {
                     // Handle multi-value (array) case
@@ -82,7 +83,7 @@ export const getAllProducts = async (req, res) => {
             filter.rating = { $gte: parseFloat(minRating) };
         }
 
-        if(discount) {
+        if (discount) {
             filter.discount = { $gte: parseFloat(discount) };
         }
         console.log(filter)
@@ -552,9 +553,14 @@ export const emptyProductSalesByUserAndProduct = async (req, res) => {
             { $set: { sales: 0 } },
             { new: true }
         );
+        console.log("🚀 ~ file: productController.js:556 ~ updatedProduct:", updatedProduct);
 
         if (!updatedProduct) {
-            return res.status(404).json({ success: false, message: "Product not found for this user" });
+            return res.status(404).json({
+                success: false,
+                updatedProduct,
+                message: "Product not found for this user"
+            });
         }
 
         res.status(200).json({
