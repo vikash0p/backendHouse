@@ -1,5 +1,5 @@
 import express from "express";
-import { createProduct,getAllProducts,getProductById,updateProduct,deleteProduct,getBestSellers,getNewArrivals,getTrendingProducts,getCategories,getProductsByCategory,getProductsByFilter,incrementProductViews,incrementProductSales } from "../controllers/productController.js";
+import { createProduct, getAllProducts, getProductById, updateProduct, deleteProduct, getBestSellers, getNewArrivals, getTrendingProducts, getCategories, getProductsByCategory, getProductsByFilter, incrementProductViews, incrementProductSales, decrementProductSales, emptyProductSalesByUserAndProduct } from "../controllers/productController.js";
 
 
 const productRouter = express.Router();
@@ -21,6 +21,9 @@ productRouter.get("/products/:filterType/:filterValue", getProductsByFilter);
 // patch request
 productRouter.patch('/products/:id/views', incrementProductViews);
 productRouter.patch('/products/:id/sales', incrementProductSales);
+
+productRouter.patch('/products/:id/decrement-sales', decrementProductSales);
+productRouter.patch('/products/:userId/:productId/reset-sales', emptyProductSalesByUserAndProduct);
 
 // put request
 productRouter.put("/products/:id", updateProduct);

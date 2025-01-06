@@ -487,6 +487,85 @@ export const incrementProductSales = async (req, res) => {
     }
 };
 
+// export const decrementProductSales = async (req, res) => {
+//     try {
+//         const { id } = req.params;
+
+//         // Decrement sales by 1
+//         const updatedProduct = await Product.findByIdAndUpdate(
+//             id,
+//             { $inc: { sales: -1 } },
+//             { new: true }
+//         );
+
+//         if (!updatedProduct) {
+//             return res.status(404).json({ success: false, message: "Product not found" });
+//         }
+
+//         res.status(200).json({
+//             success: true,
+//             message: "Product sales decremented successfully",
+//             product: updatedProduct,
+//         });
+//     } catch (error) {
+//         res.status(500).json({ success: false, message: "Failed to decrement sales", error: error.message });
+//     }
+// };
+
+
+export const decrementProductSales = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Find product to check current sales value
+        const product = await Product.findById(id);
+
+        if (!product) {
+            return res.status(404).json({ success: false, message: "Product not found" });
+        }
+
+        if (product.sales <= 0) {
+            return res.status(400).json({ success: false, message: "Product sales cannot be decremented below zero" });
+        }
+
+        // Decrement sales by 1
+        product.sales -= 1;
+        await product.save();
+
+        res.status(200).json({
+            success: true,
+            message: "Product sales decremented successfully",
+            product,
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Failed to decrement sales", error: error.message });
+    }
+};
+
+export const emptyProductSalesByUserAndProduct = async (req, res) => {
+    try {
+        const { userId, productId } = req.params;
+
+        // Reset sales to 0 for a specific product by the user
+        const updatedProduct = await Product.findOneAndUpdate(
+            { userId: userId, _id: productId },
+            { $set: { sales: 0 } },
+            { new: true }
+        );
+
+        if (!updatedProduct) {
+            return res.status(404).json({ success: false, message: "Product not found for this user" });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Product sales reset to zero successfully",
+            product: updatedProduct,
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Failed to reset product sales", error: error.message });
+    }
+};
 
 
 
