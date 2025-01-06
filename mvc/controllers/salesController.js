@@ -134,7 +134,16 @@ export const getTotalProductsBySales = async (req, res) => {
         ]);
         const totalSales = totalSalesResult[0]?.total || 0;
 
-        // Get products by sales
+        // Return early if totalSales is 0
+        if (totalSales === 0) {
+            return res.status(200).json({
+                message: "No sales data available",
+                totalSales: 0,
+                productsBySales: [],
+            });
+        }
+
+        // Get products by sales, excluding salesCount = 0
         const productsBySales = await Product.aggregate([
             {
                 $lookup: {
@@ -146,8 +155,24 @@ export const getTotalProductsBySales = async (req, res) => {
             },
             {
                 $addFields: {
-                    totalSales: { $sum: "$salesData.salesCount" },
-                    totalSalesLength: { $size: "$salesData" }, // Number of sales records per product
+                    // Filter salesData to remove entries where salesCount is 0
+                    filteredSalesData: {
+                        $filter: {
+                            input: "$salesData",
+                            as: "sale",
+                            cond: { $gt: ["$$sale.salesCount", 0] },
+                        },
+                    },
+                },
+            },
+            {
+                $addFields: {
+                    totalSales: { $sum: "$filteredSalesData.salesCount" },
+                },
+            },
+            {
+                $match: {
+                    totalSales: { $gt: 0 }, // Only include products with totalSales > 0
                 },
             },
             {
