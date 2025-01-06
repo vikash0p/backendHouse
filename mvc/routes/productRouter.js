@@ -23,7 +23,7 @@ productRouter.patch('/products/:id/views', incrementProductViews);
 productRouter.patch('/products/:id/sales', incrementProductSales);
 
 productRouter.patch('/products/:id/decrement-sales', decrementProductSales);
-productRouter.patch('/products/:userId/:productId/reset-sales', emptyProductSalesByUserAndProduct);
+productRouter.patch('/products/:productId/reset-sales', emptyProductSalesByUserAndProduct);
 
 // put request
 productRouter.put("/products/:id", updateProduct);

@@ -545,33 +545,51 @@ export const decrementProductSales = async (req, res) => {
 
 export const emptyProductSalesByUserAndProduct = async (req, res) => {
     try {
-        const { userId, productId } = req.params;
+        const { productId } = req.params;
+        console.log("🚀 ~ file: productController.js:549 ~ productId:", productId);
+
+        // Validate input
+        if (!productId) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid  productId",
+            });
+        }
+
+        const product = await Product.findOne({ _id: productId });
+        console.log("🚀 ~ file: productController.js:561 ~ product:", product);
 
         // Reset sales to 0 for a specific product by the user
         const updatedProduct = await Product.findOneAndUpdate(
-            { userId: userId, _id: productId },
+            { _id: productId },
             { $set: { sales: 0 } },
             { new: true }
         );
-        console.log("🚀 ~ file: productController.js:556 ~ updatedProduct:", updatedProduct);
+
+        console.log("Updated Product:", updatedProduct);
 
         if (!updatedProduct) {
             return res.status(404).json({
                 success: false,
-                updatedProduct,
-                message: "Product not found for this user"
+                message: "Product not found",
             });
         }
 
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             message: "Product sales reset to zero successfully",
             product: updatedProduct,
         });
     } catch (error) {
-        res.status(500).json({ success: false, message: "Failed to reset product sales", error: error.message });
+        console.error("Error resetting product sales:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to reset product sales",
+            error: error.message,
+        });
     }
 };
+
 
 
 
