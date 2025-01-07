@@ -89,7 +89,7 @@ export const getCart = async (req, res) => {
 
     try {
         // Fetch cart for the given user and populate product details
-        const cart = await Cart.findOne({ userId }).populate("items.productId", "title image finalPrice color");
+        const cart = await Cart.findOne({ userId }).populate("items.productId", "title image finalPrice color ,originalPrice, discount");
 
         if (!cart) {
             return res.status(404).json({ message: "Cart not found" });
@@ -98,6 +98,8 @@ export const getCart = async (req, res) => {
         // Calculate total products and total amount
         const totalProducts = cart.items.reduce((count, item) => count + item.quantity, 0);
         const totalAmount = cart.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+        const totalOriginalPrice=cart.items.reduce((sum, item) => sum + item.productId.originalPrice * item.quantity, 0);
+        const totalAmountWithDiscount = totalAmount - (totalAmount * cart.discount / 100);
 
         // Construct response
         const response = {
@@ -106,6 +108,8 @@ export const getCart = async (req, res) => {
             totalProducts,
             totalQuantity: cart.items.length,
             totalAmount,
+            totalOriginalPrice,
+            totalAmountWithDiscount,
             items: cart.items.map((item) => ({
                 id: item._id,
                 productId: item.productId._id,
@@ -116,6 +120,8 @@ export const getCart = async (req, res) => {
                 quantity: item.quantity,
                 price: item.price,
                 total: item.price * item.quantity,
+                originalPrice: item.productId.originalPrice,
+                discount: item.productId.discount
             })),
         };
 
