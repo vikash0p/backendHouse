@@ -33,6 +33,14 @@ const addressSchema = new mongoose.Schema(
             enum: ['Home', 'Work', 'Billing', 'Shipping'],
             default: 'Home',
         },
+        name:{
+            type: String,
+            required: true
+        },
+        mobile:{
+            type: Number,
+            required: true
+        }
     },
     {
         timestamps: true, // Automatically create createdAt and updatedAt fields

@@ -7,7 +7,18 @@ import Address from "../models/addressSchema.js";
 // Add a new address
 export const addAddress = async (req, res) => {
     try {
-        const { userId, street, city, state, postalCode, country, addressType } = req.body;
+        const { userId, street, city, state, postalCode, country, addressType, name, mobile } = req.body;
+
+        if (mobile.length != 10) {
+            return res.status(400).json({ message: 'Mobile number should be 10 digits' });
+        }
+
+
+        const existaddress = await Address.findOne({ mobile: mobile });
+
+        if (existaddress) {
+            return res.status(400).json({ message: 'Address already exists' });
+        }
 
         // Create a new address document
         const newAddress = new Address({
@@ -18,6 +29,8 @@ export const addAddress = async (req, res) => {
             postalCode,
             country,
             addressType,
+            name,
+            mobile
         });
 
         // Save to database
@@ -38,7 +51,7 @@ export const getAddressesByUser = async (req, res) => {
         const { userId } = req.params;
 
         // Fetch addresses and populate user details
-        const addresses = await Address.find({ userId }).populate('userId', 'name email phone');
+        const addresses = await Address.find({ userId }).sort({ createdAt: -1 }).populate('userId', 'name email phone');
 
         if (!addresses || addresses.length === 0) {
             return res.status(404).json({ message: 'No addresses found for this user' });
