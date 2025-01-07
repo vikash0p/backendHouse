@@ -89,7 +89,7 @@ export const getCart = async (req, res) => {
 
     try {
         // Fetch cart for the given user and populate product details
-        const cart = await Cart.findOne({ userId }).populate("items.productId", "title image finalPrice color ,originalPrice, discount");
+        const cart = await Cart.findOne({ userId }).populate("items.productId", "title image finalPrice color originalPrice discount");
 
         if (!cart) {
             return res.status(404).json({ message: "Cart not found" });
