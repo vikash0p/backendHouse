@@ -36,7 +36,9 @@ export const addAddress = async (req, res) => {
 export const getAddressesByUser = async (req, res) => {
     try {
         const { userId } = req.params;
-        const addresses = await Address.find({ userId });
+
+        // Fetch addresses and populate user details
+        const addresses = await Address.find({ userId }).populate('userId', 'name email phone');
 
         if (!addresses || addresses.length === 0) {
             return res.status(404).json({ message: 'No addresses found for this user' });
@@ -47,6 +49,7 @@ export const getAddressesByUser = async (req, res) => {
         res.status(500).json({ message: 'Error fetching addresses', error: error.message });
     }
 };
+
 
 // Update an address
 export const updateAddress = async (req, res) => {
