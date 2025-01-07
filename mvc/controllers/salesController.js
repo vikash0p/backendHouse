@@ -143,7 +143,7 @@ export const getTotalProductsBySales = async (req, res) => {
             });
         }
 
-        // Get products by sales, excluding salesCount = 0
+        // Get products by sales, including salesData
         const productsBySales = await Product.aggregate([
             {
                 $lookup: {
@@ -155,7 +155,6 @@ export const getTotalProductsBySales = async (req, res) => {
             },
             {
                 $addFields: {
-                    // Filter salesData to remove entries where salesCount is 0
                     filteredSalesData: {
                         $filter: {
                             input: "$salesData",
@@ -180,6 +179,25 @@ export const getTotalProductsBySales = async (req, res) => {
             },
             {
                 $limit: 10, // Limit the results to the top 10 products
+            },
+            {
+                $project: {
+                    _id: 1,
+                    title: 1,
+                    description: 1,
+                    category: 1,
+                    image: 1,
+                    origin: 1,
+                    originalPrice: 1,
+                    discount: 1,
+                    finalPrice: 1,
+                    material: 1,
+                    stock: 1,
+                    brand: 1,
+                    updatedAt: 1,
+                    filteredSalesData: 1,
+                    totalSales: 1,
+                },
             },
         ]);
 
