@@ -98,8 +98,8 @@ export const getCart = async (req, res) => {
         // Calculate total products and total amount
         const totalProducts = cart.items.reduce((count, item) => count + item.quantity, 0);
         const totalAmount = cart.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-        const totalOriginalPrice=cart.items.reduce((sum, item) => sum + item.productId.originalPrice * item.quantity, 0);
-        const totalAmountWithDiscount = totalAmount - (totalAmount * cart.discount / 100);
+        const totalOriginalPrice = cart.items.reduce((sum, item) => sum + item.productId.originalPrice * item.quantity, 0);
+        const discountPrice=totalOriginalPrice-totalAmount
 
         // Construct response
         const response = {
@@ -109,7 +109,7 @@ export const getCart = async (req, res) => {
             totalQuantity: cart.items.length,
             totalAmount,
             totalOriginalPrice,
-            totalAmountWithDiscount,
+            discountPrice,
             items: cart.items.map((item) => ({
                 id: item._id,
                 productId: item.productId._id,
