@@ -5,7 +5,7 @@ const addressSchema = new mongoose.Schema(
     {
         userId: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'User', // Reference to User model
+            ref: 'User',
             required: true,
         },
         street: {
@@ -33,11 +33,11 @@ const addressSchema = new mongoose.Schema(
             enum: ['Home', 'Work', 'Billing', 'Shipping'],
             default: 'Home',
         },
-        name:{
+        name: {
             type: String,
             required: true
         },
-        mobile:{
+        mobile: {
             type: Number,
             required: true
         }

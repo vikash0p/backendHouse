@@ -103,3 +103,24 @@ export const deleteAddress = async (req, res) => {
         res.status(500).json({ message: 'Error deleting address', error: error.message });
     }
 };
+
+
+// Get a single address by ID
+export const getSingleAddress = async (req, res) => {
+    try {
+        const { addressId } = req.params;
+
+        const address = await Address.findById(addressId);
+
+        if (!address) {
+            return res.status(404).json({ message: 'Address not found' });
+        }
+
+        res.status(200).json({
+            message: 'Address retrieved successfully',
+            data: address,
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error retrieving address', error: error.message });
+    }
+};
