@@ -1,5 +1,5 @@
 import express from 'express';
-import { addAddress, getAddressesByUser, updateAddress, deleteAddress,getSingleAddress } from '../controllers/addressController.js';
+import { addAddress, getAddressesByUser, updateAddress, deleteAddress,getSingleAddress,chooseAddress } from '../controllers/addressController.js';
 
 const addressRouter = express.Router();
 
@@ -15,6 +15,10 @@ addressRouter.put('/:addressId', updateAddress);
 // DELETE /addresses/:addressId - Delete an address
 addressRouter.delete('/:addressId', deleteAddress);
 
-addressRouter.get('/single/:addressId', getSingleAddress); // Get a single address by ID
+addressRouter.get('/single/:addressId', getSingleAddress);
+
+
+addressRouter.post('/choose/:addressId', chooseAddress);
+
 
 export default addressRouter;

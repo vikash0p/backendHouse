@@ -43,7 +43,7 @@ const addressSchema = new mongoose.Schema(
         }
     },
     {
-        timestamps: true, // Automatically create createdAt and updatedAt fields
+        timestamps: true,
     }
 );
 

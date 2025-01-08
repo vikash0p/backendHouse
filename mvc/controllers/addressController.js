@@ -105,6 +105,25 @@ export const deleteAddress = async (req, res) => {
 };
 
 
+
+// POST: Mark an address as chosen
+export const chooseAddress = async (req, res) => {
+    try {
+        const { addressId } = req.params;
+        const address = await Address.findById(addressId);
+
+        if (!address) {
+            return res.status(404).json({ message: 'Address not found' });
+        }
+
+        // Logic to mark the address as chosen (you can store this in the database or handle it in the client)
+        res.status(200).json({ message: 'Address chosen successfully', address });
+    } catch (error) {
+        res.status(500).json({ message: 'Error choosing address', error: error.message });
+    }
+};
+
+
 // Get a single address by ID
 export const getSingleAddress = async (req, res) => {
     try {
