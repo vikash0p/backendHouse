@@ -13,6 +13,7 @@ import cartRouter from "./mvc/routes/cartRouter.js";
 import wishlistRouter from "./mvc/routes/wishlistRouter.js";
 import salesRouter from "./mvc/routes/salesRouter.js";
 import addressRouter from "./mvc/routes/addressRouter.js";
+import orderRouter from "./mvc/routes/orderRouter.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -57,6 +58,7 @@ app.use('/cart',cartRouter);
 app.use('/wishlist',wishlistRouter);
 app.use('/sales',salesRouter)
 app.use('/address',addressRouter)
+app.use('/order',orderRouter)
 
 app.get('/', (req, res) => {
     res.render('index');
