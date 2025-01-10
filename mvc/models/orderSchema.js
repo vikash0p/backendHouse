@@ -20,7 +20,7 @@ const orderSchema = new mongoose.Schema(
         shippingAddress: { type: mongoose.Schema.Types.ObjectId, ref: "Address", required: true },
         paymentMethod: {
             type: String,
-            enum: ["COD", "Card", "NetBanking", "UPI"],
+            enum: ["COD", "Card", "NetBanking", "UPI" ,"Wallet","GiftCard"],
             required: true,
         },
     },
