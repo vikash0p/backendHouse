@@ -146,7 +146,7 @@ export const getReviewsByUserId = async (req, res) => {
         // Fetch reviews for the specified user ID
         const reviews = await Review.find({ userId })
             .populate("userId", "name email")
-            .populate("productId", "title category")
+            .populate("productId", "title category image finalPrice")
             .sort({ createdAt: -1 }); // Sort by `createdAt` in descending order
 
         if (reviews.length === 0) {
