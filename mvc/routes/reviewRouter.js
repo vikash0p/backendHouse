@@ -1,5 +1,5 @@
 import express from "express";
-import {createReview,getReviews,getReviewById,updateReview,deleteReview,getReviewsByProductId} from "../controllers/reviewController.js";
+import {createReview,getReviews,getReviewById,updateReview,deleteReview,getReviewsByProductId ,getReviewsByUserId} from "../controllers/reviewController.js";
 
 const reviewRouter = express.Router();
 
@@ -13,6 +13,7 @@ reviewRouter.get("/", getReviews);
 reviewRouter.get("/:id", getReviewById);
 
 reviewRouter.get("/product/:productId", getReviewsByProductId);
+reviewRouter.get("/user/:userId", getReviewsByUserId);
 
 
 // Update a review by ID
