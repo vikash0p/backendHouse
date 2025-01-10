@@ -51,7 +51,7 @@ export const getAddressesByUser = async (req, res) => {
         const { userId } = req.params;
 
         // Fetch addresses and populate user details
-        const addresses = await Address.find({ userId }).sort({ createdAt: -1 }).populate('userId', 'name email phone');
+        const addresses = await Address.find({ userId }).sort({ createdAt: 1 }).populate('userId', 'name email phone');
 
         if (!addresses || addresses.length === 0) {
             return res.status(404).json({ message: 'No addresses found for this user' });
