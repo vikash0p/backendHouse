@@ -24,8 +24,6 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 5000;
 
-// Database connection
-connectDB();
 
 // Middleware
 app.use(express.static('public'));
@@ -54,11 +52,11 @@ app.set('views', path.join(__dirname, 'views'));
 app.use('/auth', userRouter);
 app.use('/furniture', productRouter)
 app.use('/reviews', reviewRouter)
-app.use('/cart',cartRouter);
-app.use('/wishlist',wishlistRouter);
-app.use('/sales',salesRouter)
-app.use('/address',addressRouter)
-app.use('/order',orderRouter)
+app.use('/cart', cartRouter);
+app.use('/wishlist', wishlistRouter);
+app.use('/sales', salesRouter)
+app.use('/address', addressRouter)
+app.use('/order', orderRouter)
 
 app.get('/', (req, res) => {
     res.render('index');
@@ -78,6 +76,21 @@ app.use((err, req, res, next) => {
 });
 
 // Start server
-app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
-});
+
+
+const startServer = async () => {
+    try {
+        await connectDB();
+
+        app.listen(port, () => {
+            console.log(`🆗 Server running at http://localhost:${port}`);
+        });
+    } catch (error) {
+        console.error('Error connecting to database:', error.message);
+        process.exit(1);
+    }
+
+
+}
+
+startServer();
